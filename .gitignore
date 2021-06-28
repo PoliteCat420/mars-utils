@@ -1,2 +1,4 @@
 Data/maven/
 swea.py
+.ipynb_checkpoints/
+__pycache__/
