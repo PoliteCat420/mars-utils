@@ -1,6 +1,7 @@
 Data/maven/
-swea.py
 .ipynb_checkpoints/
 __pycache__/
 examples/.ipynb_checkpoints/
+path
+examples/path
 

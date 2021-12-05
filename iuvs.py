@@ -14,7 +14,8 @@ import re
 import pandas as pd
 
 instr = 'iuvs'
-instrPath = '../Data/maven/data/sci/%s/'%instr[:3]
+projectPath = utils.getBasePath()
+instrPath = projectPath + '/Data/maven/data/sci/%s/'%instr[:3] 
 def loadUrls(dataLevel,dataCls):
     pathsPath = instrPath + '%s_%s_paths.csv'%(dataLevel,dataCls)
     if not os.path.exists(pathsPath):
@@ -39,7 +40,7 @@ def getData(date,dataLevel,dataCls):
     fitFiles = {}
     for i,dP in enumerate(downloadPaths):
         if not os.path.exists(dP):
-            print('Downloading %s %s %s %s orbit=%s'%(instr,dataLevel,dataCls,date,dateOrbitsrbits[i]))
+            print('Downloading %s %s %s %s orbit=%s'%(instr,dataLevel,dataCls,date,dateOrbits[i]))
             thisFits = fits.open(dateUrls[i],cache=False)
             thisFits.verify('fix')
             thisFits.writeto(dP)

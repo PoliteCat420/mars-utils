@@ -18,7 +18,8 @@ from scipy.integrate import simpson
 import math
 
 instr = 'swia'
-instrPath = '../Data/maven/data/sci/%s/'%instr[:3]
+projectPath = utils.getBasePath()
+instrPath = projectPath + '/Data/maven/data/sci/%s/'%instr[:3]
 degToRad = math.pi/180.0
 def loadUrls(dataCls='coarse_svy_3d'):
     pathsPath = instrPath + '%s_paths.csv'%dataCls
@@ -97,10 +98,10 @@ def getDataUrls(dataCls='coarse_svy_3d',loadUrls=False):
         urlDf = loadUrls(dataCls)
     return urlDf
 
-def reduceCoarseData(dF,date,t1,t2):
+def reduceCoarseData(dF,t1,t2):
     #Average proton flux observations over area for each energy bin for coarse data
     tyP = 'coarse'
-    startId, endId = utils.selCdfTimes(dF,date,t1,t2)
+    startId, endId = utils.selCdfTimes(dF,t1,t2)
     timeArr = dF['epoch'][:][startId:endId]
     fluxArr = dF['diff_en_fluxes'][:][startId:endId,:,:,:]
     energyArr = dF['energy_%s'%tyP][:]
@@ -119,8 +120,8 @@ def reduceCoarseData(dF,date,t1,t2):
     backwardFluxes = np.transpose(backwardFluxes)
     return forwardFluxes,backwardFluxes,energyArr,timeArr
 
-def getSAIntegratedFlux(dF,tyP,phI,phiIn,date,t1,t2):
-    startId, endId = utils.selCdfTimes(dF,date,t1,t2)
+def getSAIntegratedFlux(dF,tyP,phI,phiIn,t1,t2):
+    startId, endId = utils.selCdfTimes(dF,t1,t2)
     fluX = dF['diff_en_fluxes'][:][startId:endId]
     timE = dF['epoch'][:][startId:endId]
     thetA = (dF['theta_%s'%tyP][...]+90.0)*degToRad 
