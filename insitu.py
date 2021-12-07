@@ -3,8 +3,8 @@ import numpy as np
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 import os
-os.environ["CDF_LIB"] = '/home/ghost/cdf38_0-dist/lib'
-from spacepy import pycdf
+#os.environ["CDF_LIB"] = '/home/ghost/cdf38_0-dist/lib'
+#from spacepy import pycdf
 import requests
 import glob
 import datetime
@@ -23,8 +23,8 @@ from dateutil.parser import parse
 from _collections import OrderedDict
 
 instr = 'kp/insitu'
-projectPath = '/scratch/dattaraj/datta/mars-utils'
-instrPath = projectPath + '/Data/maven/data/sci/%s/'%instr
+projectPath = utils.getBasePath()
+instrPath = projectPath + '/Data/sym/maven/data/sci/%s/'%instr
 degToRad = math.pi/180.0
 
 def loadUrls():
@@ -48,13 +48,34 @@ def download(date):
     fileName = dateUrl.split('/')[-1].split('_')[:-2]
     fileName = '_'.join(fileName) + '.tab'
     downloadPath = filePath + fileName
-    print(downloadPath)
     if not os.path.exists(downloadPath):
         print('Downloading %s %s'%(instr,date))
         r = requests.get(dateUrl,allow_redirects=True)
         with open(downloadPath,'wb') as fl:
             fl.write(r.content)
     return downloadPath
+
+def downloadAll():
+    urlDf = loadUrls()
+    for index,row in urlDf.iterrows():
+        dateUrl = row['Url']
+        date = str(index).split(' ')[0]
+        print(date)
+        year = date[:4]
+        month = date[5:7]
+        day = date[8:10]
+        filePath = instrPath + '%s/%s/'%(year,month)
+        if not os.path.exists(filePath):
+            os.makedirs(filePath)
+        fileName = dateUrl.split('/')[-1].split('_')[:-2]
+        fileName = '_'.join(fileName) + '.tab'
+        downloadPath = filePath + fileName
+        if not os.path.exists(downloadPath):
+            print('Downloading %s %s'%(instr,date))
+            r = requests.get(dateUrl,allow_redirects=True)
+            with open(downloadPath,'wb') as fl:
+                fl.write(r.content)
+    return
               
 def getData(date):
     #date - yyyy-mm-dd
@@ -80,7 +101,6 @@ def getDataUrls(loadUrls=False,update=False):
             soup = BeautifulSoup(html_page, "lxml")
             yrLinks = [re.search(r'[2]\d{3}$',item.get('href')).group(0) for item in soup.findAll('a') if re.search(r'[2]\d{3}$',item.get('href'))]
             yrLinks = list(set(yrLinks))
-            print(yrLinks)
             for yr in yrLinks:
                 yrUrl = baseUrl + yr 
                 req = Request(yrUrl)

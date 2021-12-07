@@ -3,8 +3,8 @@ import numpy as np
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 import os
-os.environ["CDF_LIB"] = '/home/ghost/cdf38_0-dist/lib'
-from spacepy import pycdf
+#os.environ["CDF_LIB"] = '/home/ghost/cdf38_0-dist/lib'
+#from spacepy import pycdf
 import requests
 import glob
 import datetime
@@ -24,7 +24,7 @@ from _collections import OrderedDict
 
 instr = 'mag'
 projectPath = utils.getBasePath()
-instrPath = projectPath + '/Data/maven/sci/%s/'%instr
+instrPath = projectPath + '/Data/sym/maven/data/sci/%s/'%instr
 degToRad = math.pi/180.0
 
 def loadUrls():

@@ -15,7 +15,7 @@ import pandas as pd
 
 instr = 'iuvs'
 projectPath = utils.getBasePath()
-instrPath = projectPath + '/Data/maven/data/sci/%s/'%instr[:3] 
+instrPath = projectPath + '/Data/sym/maven/data/sci/%s/'%instr[:3] 
 def loadUrls(dataLevel,dataCls):
     pathsPath = instrPath + '%s_%s_paths.csv'%(dataLevel,dataCls)
     if not os.path.exists(pathsPath):
