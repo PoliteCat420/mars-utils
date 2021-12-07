@@ -1,7 +1,9 @@
-Data/maven/
+Data/sym/
 .ipynb_checkpoints/
 __pycache__/
 examples/.ipynb_checkpoints/
 path
 examples/path
+serial_job.sh
+
 
