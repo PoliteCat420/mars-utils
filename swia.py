@@ -3,8 +3,6 @@ import numpy as np
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 import os
-#os.environ["CDF_LIB"] = '/home/ghost/cdf38_0-dist/lib'
-#from spacepy import pycdf
 import cdflib
 import requests
 import glob
@@ -73,7 +71,6 @@ def downloadAll(date,dataCls='coarse_svy_3d'):
 def getData(date,dataCls='coarse_svy_3d'):
     #date - yyyy-mm-dd
     downloadPath = download(date,dataCls)
-    #thisCdf = pycdf.CDF(downloadPath) 
     thisCdf = cdflib.CDF(downloadPath)
     return thisCdf
 
@@ -123,30 +120,11 @@ def getDataUrls(dataCls='coarse_svy_3d',loadUrls=False):
 
 def reduceCoarseData(dF,t1,t2):
     #Average proton flux observations over area for each energy bin for coarse data
-    #tyP = 'coarse'
-    #startId, endId = utils.selCdfTimes(dF,t1,t2)
-    #timeArr = dF['epoch'][:][startId:endId]
-    #fluxArr = dF['diff_en_fluxes'][:][startId:endId,:,:,:]
-    #energyArr = dF['energy_%s'%tyP][:]
-    #forwardFluxes = np.zeros((len(energyArr),len(timeArr)),dtype=np.float) #within phi 45
-    #backwardFluxes = np.zeros((len(energyArr),len(timeArr)),dtype=np.float) #outside phi 45
-    #forwardIndices = [0,13,14,15]
-    #backwardIndices = np.arange(1,13).tolist() 
-    #forwardFluxes = fluxArr[:,forwardIndices,:,:].mean(axis=(1,2))
-    #backwardFluxes = fluxArr[:,backwardIndices,:,:].mean(axis=(1,2)) 
-    #
-    #forwardFluxes[forwardFluxes == 0.0] = 1.0
-    #backwardFluxes[backwardFluxes == 0.0] = 1.0
-    #forwardFluxes = np.log10(forwardFluxes)
-    #backwardFluxes = np.log10(backwardFluxes)
-    #forwardFluxes = np.transpose(forwardFluxes)
-    #backwardFluxes = np.transpose(backwardFluxes)
-    
     tyP = 'coarse'
     startId, endId = utils.selCdfTimes(dF,t1,t2)
-    timeArr = dF.varget('epoch')[startId:endId]
-    fluxArr = dF.varget('diff_en_fluxes')[startId:endId,:,:,:]
-    energyArr = dF.varget('energy_%s'%tyP)
+    timeArr = np.array(cdflib.cdfepoch.to_datetime(dF['epoch']))[startId:endId]
+    fluxArr = dF['diff_en_fluxes'][startId:endId,:,:,:]
+    energyArr = dF['energy_%s'%tyP]
     forwardFluxes = np.zeros((len(energyArr),len(timeArr)),dtype=np.float) #within phi 45
     backwardFluxes = np.zeros((len(energyArr),len(timeArr)),dtype=np.float) #outside phi 45
     forwardIndices = [0,13,14,15]
@@ -164,15 +142,15 @@ def reduceCoarseData(dF,t1,t2):
 
 def getSAIntegratedFlux(dF,tyP,phI,phiIn,t1,t2):
     startId, endId = utils.selCdfTimes(dF,t1,t2)
-    fluX = dF.varget('diff_en_fluxes')[startId:endId]
-    timE = dF.varget('epoch')[startId:endId]
-    thetA = (dF.varget('theta_%s'%tyP) + 90.0)*degToRad 
+    fluX = dF['diff_en_fluxes'][startId:endId]
+    timE = np.array(cdflib.cdfepoch.to_datetime(dF['epoch']))[startId:endId]
+    thetA = (dF['theta_%s'%tyP] + 90.0)*degToRad 
     sinTheta = np.sin(thetA)
     eStarts = np.zeros(len(timE),dtype=np.int)
     dStarts = np.zeros(len(timE),dtype=np.int)
     if tyP == 'fine':
-        eStarts = dF.varget('estep_first')
-        dStarts = dF.varget('dstep_first')
+        eStarts = dF['estep_first']
+        dStarts = dF['dstep_first']
     fluxArr = np.empty((len(timE),48))
     for iT in range(len(timE)):
         eII = 0

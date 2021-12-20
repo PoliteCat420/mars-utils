@@ -1,10 +1,9 @@
+#To be updated and an example needs to be written
 from astropy.io import fits
 import numpy as np
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 import os
-#os.environ["CDF_LIB"] = '/home/ghost/cdf38_0-dist/lib'
-#from spacepy import pycdf
 import requests
 import glob
 import datetime
@@ -16,7 +15,6 @@ import pandas as pd
 import utils
 from scipy.integrate import simpson
 import math
-#import pydivide
 import calendar
 import builtins
 from dateutil.parser import parse

@@ -1,3 +1,4 @@
+#needs to be updated and an example needs to be written
 from astropy.io import fits
 import numpy as np
 from bs4 import BeautifulSoup

@@ -1,1 +1,1 @@
-all data goes in this path
+all mars data goes in this path
